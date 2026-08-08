@@ -1,0 +1,95 @@
+{
+  "env": {
+    "world_size": 8,
+    "gpu": "NVIDIA H200",
+    "torch": "2.1.0.post301"
+  },
+  "args": {
+    "d": 8192,
+    "hmult": 4,
+    "tokens": 8192,
+    "iters": 20,
+    "dtype": "bfloat16",
+    "out": "results/dist_d8192_1446294.json"
+  },
+  "rows": [
+    {
+      "variant": "tp_dense",
+      "hidden": 32768,
+      "params_per_rank": 67108864,
+      "comm_pattern": "all-reduce (tam mesh)",
+      "peers_per_rank": 7,
+      "fwd_ms": 4.2470525950193405,
+      "comm_mb_fwd": 234.881024,
+      "comm_mb_fwd_bwd": 469.762048,
+      "proj_sec_1gbps": 3.758096384,
+      "proj_sec_10gbps": 0.3758096384,
+      "proj_sec_100gbps": 0.03758096384
+    },
+    {
+      "variant": "topo_ring",
+      "hidden": 131072,
+      "params_per_rank": 67108864,
+      "comm_pattern": "komsu P2P (halka)",
+      "peers_per_rank": 2,
+      "fwd_ms": 2.829374186694622,
+      "comm_mb_fwd": 67.108864,
+      "comm_mb_fwd_bwd": 134.217728,
+      "proj_sec_1gbps": 1.0737418239999998,
+      "proj_sec_10gbps": 0.10737418239999999,
+      "proj_sec_100gbps": 0.010737418239999998
+    },
+    {
+      "variant": "topo_block",
+      "hidden": 262144,
+      "params_per_rank": 67108864,
+      "comm_pattern": "iletisim yok",
+      "peers_per_rank": 0,
+      "fwd_ms": 1.9025443121790886,
+      "comm_mb_fwd": 0.0,
+      "comm_mb_fwd_bwd": 0.0,
+      "proj_sec_1gbps": 0.0,
+      "proj_sec_10gbps": 0.0,
+      "proj_sec_100gbps": 0.0
+    },
+    {
+      "variant": "topo_butterfly_s0",
+      "hidden": 174592,
+      "params_per_rank": 67043328,
+      "comm_pattern": "kelebek asama 0 (tek es)",
+      "peers_per_rank": 1,
+      "fwd_ms": 2.3325713351368904,
+      "comm_mb_fwd": 33.554432,
+      "comm_mb_fwd_bwd": 67.108864,
+      "proj_sec_1gbps": 0.5368709119999999,
+      "proj_sec_10gbps": 0.053687091199999995,
+      "proj_sec_100gbps": 0.005368709119999999
+    },
+    {
+      "variant": "topo_butterfly_s1",
+      "hidden": 174592,
+      "params_per_rank": 67043328,
+      "comm_pattern": "kelebek asama 1 (tek es)",
+      "peers_per_rank": 1,
+      "fwd_ms": 2.2895148023962975,
+      "comm_mb_fwd": 33.554432,
+      "comm_mb_fwd_bwd": 67.108864,
+      "proj_sec_1gbps": 0.5368709119999999,
+      "proj_sec_10gbps": 0.053687091199999995,
+      "proj_sec_100gbps": 0.005368709119999999
+    },
+    {
+      "variant": "topo_butterfly_s2",
+      "hidden": 174592,
+      "params_per_rank": 67043328,
+      "comm_pattern": "kelebek asama 2 (tek es)",
+      "peers_per_rank": 1,
+      "fwd_ms": 2.916521579027176,
+      "comm_mb_fwd": 33.554432,
+      "comm_mb_fwd_bwd": 67.108864,
+      "proj_sec_1gbps": 0.5368709119999999,
+      "proj_sec_10gbps": 0.053687091199999995,
+      "proj_sec_100gbps": 0.005368709119999999
+    }
+  ]
+}

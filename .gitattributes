@@ -1,0 +1,15 @@
+# SLURM ve kabuk betikleri LF ile kalmali: sbatch, CRLF gorunce
+# "Batch script contains DOS line breaks" diyip isi reddediyor.
+*.sh    text eol=lf
+*.slurm text eol=lf
+
+# Kaynak ve metin dosyalari normalize edilsin
+*.py    text
+*.tex   text
+*.md    text
+*.csv   text
+*.json  text
+
+# Ikili dosyalar dokunulmasin
+*.pdf   binary
+*.png   binary

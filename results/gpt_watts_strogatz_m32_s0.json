@@ -1,0 +1,125 @@
+{
+  "env": {
+    "device": "cuda",
+    "gpu": "NVIDIA H200",
+    "torch": "2.1.0.post301",
+    "vocab_size": 27,
+    "train_tokens": 90000000,
+    "params_total_effective": 25441792,
+    "params_ffn": 16777216,
+    "params_attn": 8388608,
+    "ffn_coverage": 1.0,
+    "ffn_hidden": 16384
+  },
+  "args": {
+    "data": "data",
+    "ffn": "watts_strogatz",
+    "ffn_mult": 32,
+    "rewire": 0.1,
+    "n_layer": 8,
+    "n_head": 8,
+    "d_model": 512,
+    "block_size": 512,
+    "batch_size": 32,
+    "iters": 6000,
+    "warmup": 300,
+    "lr": 0.0006,
+    "min_lr": 6e-05,
+    "weight_decay": 0.1,
+    "eval_every": 500,
+    "seed": 0,
+    "compile": false,
+    "out": "results/gpt_watts_strogatz_m32_s0.json"
+  },
+  "curve": [
+    {
+      "step": 500,
+      "train_loss": 1.729949712753296,
+      "val_bpc": 2.468369201938265,
+      "seconds": 21.67162638157606,
+      "tokens": 8192000
+    },
+    {
+      "step": 1000,
+      "train_loss": 1.3814903497695923,
+      "val_bpc": 1.9422836632016702,
+      "seconds": 43.68850304558873,
+      "tokens": 16384000
+    },
+    {
+      "step": 1500,
+      "train_loss": 1.2830357551574707,
+      "val_bpc": 1.8107603815488829,
+      "seconds": 65.80084741860628,
+      "tokens": 24576000
+    },
+    {
+      "step": 2000,
+      "train_loss": 1.2087018489837646,
+      "val_bpc": 1.7285737423111909,
+      "seconds": 87.8867375291884,
+      "tokens": 32768000
+    },
+    {
+      "step": 2500,
+      "train_loss": 1.1386398077011108,
+      "val_bpc": 1.6788542011618672,
+      "seconds": 109.88560897484422,
+      "tokens": 40960000
+    },
+    {
+      "step": 3000,
+      "train_loss": 1.195311427116394,
+      "val_bpc": 1.6355811201113641,
+      "seconds": 131.9100994989276,
+      "tokens": 49152000
+    },
+    {
+      "step": 3500,
+      "train_loss": 1.0799438953399658,
+      "val_bpc": 1.6010999091211704,
+      "seconds": 153.9951397255063,
+      "tokens": 57344000
+    },
+    {
+      "step": 4000,
+      "train_loss": 1.1204633712768555,
+      "val_bpc": 1.5735220886159162,
+      "seconds": 176.07157908380032,
+      "tokens": 65536000
+    },
+    {
+      "step": 4500,
+      "train_loss": 1.0925402641296387,
+      "val_bpc": 1.5479147627725753,
+      "seconds": 198.0869125314057,
+      "tokens": 73728000
+    },
+    {
+      "step": 5000,
+      "train_loss": 1.0962591171264648,
+      "val_bpc": 1.5294267481926793,
+      "seconds": 220.13226387649775,
+      "tokens": 81920000
+    },
+    {
+      "step": 5500,
+      "train_loss": 1.071236252784729,
+      "val_bpc": 1.5142530903895794,
+      "seconds": 242.23040939122438,
+      "tokens": 90112000
+    },
+    {
+      "step": 6000,
+      "train_loss": 1.053115725517273,
+      "val_bpc": 1.5058457271012835,
+      "seconds": 264.27051747217774,
+      "tokens": 98304000
+    }
+  ],
+  "final_val_bpc": 1.506347397484154,
+  "final_val_nll": 1.0441204515099525,
+  "train_seconds": 264.99363138899207,
+  "tokens_per_sec": 370967.4058381298,
+  "peak_mem_gb": 13.209053696
+}

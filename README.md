@@ -1,0 +1,153 @@
+# Mixing Depth in Sparse Transformer FFN Layers
+
+Code, raw results, and paper sources for **"Structured Sparsity in Transformer Feed-Forward
+Layers: A Controlled Study of the Coverage–Depth–Communication Trade-off."**
+
+We replace the two dense matrices of a Transformer FFN with seven connectivity patterns
+(dense, ring, small-world, random, block-diagonal, mosaic, butterfly) under an
+**equal-parameter and equal-FLOP** constraint — the hidden layer is widened as density falls,
+so every variant has the same parameter count and the same number of multiply-accumulates.
+The only thing that varies is the *shape* of the weight matrix.
+
+All 326 training runs were performed on NVIDIA H200 GPUs at
+[TÜBİTAK ULAKBİM TRUBA](https://truba.gov.tr/).
+
+## Main result
+
+Per-layer **coverage** — the fraction of inputs an output can reach through the hidden layer —
+is the intuitive structural predictor, and it fails in both directions. At `M=16`, butterfly
+and block-diagonal have *identical* coverage (0.250) yet differ by 9.6σ; ring and butterfly
+differ *twofold* in coverage yet are statistically indistinguishable (0.95σ).
+
+We instead define the **mixing depth** τ, the number of layers a topology needs before every
+output can reach every input:
+
+```
+C_eff(L) = (1/d²) · |{(i,j) : (R_L · R_{L-1} ··· R_1)_ij > 0}|,   R_l = D_l U_l
+τ        = min{ L : C_eff(L) = 1 }
+```
+
+τ is computed from the binary masks alone — no training required. Across four densities, of 41
+pairwise comparisons, **35 are correct, 9 are statistically indistinguishable, and 1 is a
+violation**. Two predictions were registered in the experiment scripts *before* the
+corresponding runs were queued, and both held:
+
+| Pre-registered prediction | Outcome |
+|---|---|
+| Freeze the butterfly's stage across layers → τ becomes `>L` → quality should fall onto block-diagonal | Lands **0.14σ** from block |
+| At `M=64`, coverage and τ rank ring and butterfly *oppositely* → if τ is right, butterfly wins despite half the coverage | Butterfly wins by **2.53σ** |
+
+The single failure is reported with equal prominence: at `M=64` random and small-world both
+have τ=1 yet separate by 8.2σ. τ is a binary reachability measure and cannot see the
+*distribution* of that reach.
+
+## Repository layout
+
+```
+polytopo/            Python package
+  topology.py          pattern constructors, ffn_coverage, cumulative_coverage
+  gpt.py               GPT-mini with pluggable FFN topology (--fixed-mask lives here)
+  layers.py            masked / bmm / butterfly linear layers
+  models.py, data.py   layer-level synthetic task
+
+train_gpt.py         main architecture sweep (language modeling)
+train_topology.py    layer-level synthetic task
+train_ddp.py         data-parallel scaling run (~403M)
+train_dist_ffn.py    distributed sharded-FFN training
+bench_layer.py       single-layer latency/memory
+bench_distributed.py multi-GPU communication benchmark
+prepare_text.py      builds text8 into data/
+prepare_enwik9.py    builds enwik9 into data/
+
+analiz_tau.py        THE analysis entry point: τ tables, depth regimes, control verdict
+make_figs.py         figures, Turkish labels    (reads results/, nothing hardcoded)
+make_figs_en.py      figures, English labels
+make_tables.py       regenerates TABLOLAR.md from results/
+summarize.py         flattens results/*.json into ozet.csv
+karar.py             bandwidth decision model
+
+slurm/               SLURM batch scripts (one per experiment family)
+results/             326 raw run records, one JSON each
+makale.tex           paper, Turkish
+makale_en.tex        paper, English
+```
+
+The `slurm/` scripts are kept because they are the experimental record: each one states the
+exact grid, the hyperparameters, the question it answers, and — for the two confirmatory
+experiments — the prediction registered before it was queued. They carry cluster-specific
+directives (partition, account, `module load`) that you will need to replace; a single run
+needs nothing but the `python train_gpt.py` line below.
+
+## Reproducing
+
+```bash
+pip install -r requirements.txt
+python prepare_text.py          # downloads and encodes text8 into data/
+```
+
+A single run (≈3 min on one H200 for `L=8`):
+
+```bash
+python train_gpt.py --ffn butterfly --ffn-mult 16 --seed 0 --init mixed \
+  --d-model 512 --n-layer 8 --n-head 8 --block-size 512 --batch-size 32 \
+  --iters 6000 --out results/gpt_butterfly_m16_s0_mixed.json
+```
+
+The full grids are in `slurm/`; each script's header states the question it answers and, where
+applicable, the prediction registered before it was run:
+
+| Script | Experiment |
+|---|---|
+| `gpt_grid.slurm` | main density sweep |
+| `gpt_derinlik.slurm` | depth sweep, `L ∈ {2,4,8,16}` |
+| `gpt_yogunluk_doldur.slurm` | fills `M ∈ {32,64}` to n=3, adds butterfly |
+| `gpt_sabit_maske.slurm` | the fixed-mask control (τ's point prediction) |
+| `gpt_kilavuz.slurm` | self-guided training control |
+| `scale_410m.slurm` | ~403M scaling run |
+| `distributed.slurm`, `dist_train.slurm` | communication benchmarks |
+
+Then reproduce every number in the paper:
+
+```bash
+python analiz_tau.py --latex     # tables + LaTeX; control verdict in section 5
+python make_figs_en.py           # figures
+```
+
+`analiz_tau.py` reads `results/*.json` directly. Nothing in the analysis or figure scripts is
+hardcoded, so re-running after adding runs is always consistent with the data.
+
+### A note on `--fixed-mask`
+
+By default each layer receives a different mask seed (`seed + 17*i` in `gpt.py`), which was
+intended purely as variance reduction. A side effect is that seed-consuming patterns (random,
+small-world) are **redrawn at every layer**, making the "unstructured random" baseline itself a
+depth-varying pattern. `--fixed-mask` holds the topology constant across layers while still
+varying it across seeds, which is what disentangles the two findings. See
+`slurm/gpt_sabit_maske.slurm`.
+
+## Results format
+
+Each `results/*.json` holds `env` (GPU, torch version, token counts), `args` (the full
+argparse namespace, so every run is self-describing), `curve` (per-eval-step loss/bpc/tokens),
+and the final `final_val_bpc`, `train_seconds`, `peak_mem_gb`.
+
+Significance throughout is `σ = |Δ| / sqrt(SE₁² + SE₂²)`, and `σ < 2` is treated as noise.
+
+## Citation
+
+```bibtex
+@article{durmaz2026mixingdepth,
+  title  = {Structured Sparsity in Transformer Feed-Forward Layers:
+            A Controlled Study of the Coverage--Depth--Communication Trade-off},
+  author = {Durmaz, Mustafa Selman},
+  year   = {2026}
+}
+```
+
+## Notes
+
+Source comments are in Turkish; identifiers, this README, and `makale_en.tex` are in English.
+
+## License
+
+MIT — see [LICENSE](LICENSE).

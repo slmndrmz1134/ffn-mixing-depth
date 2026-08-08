@@ -1,0 +1,56 @@
+{
+  "env": {
+    "world_size": 8,
+    "gpu": "NVIDIA H200",
+    "torch": "2.1.0.post301"
+  },
+  "args": {
+    "d": 2048,
+    "hmult": 4,
+    "tokens": 8192,
+    "iters": 20,
+    "dtype": "bfloat16",
+    "out": "results/dist_d2048_1434625.json"
+  },
+  "rows": [
+    {
+      "variant": "tp_dense",
+      "hidden": 8192,
+      "params_per_rank": 4194304,
+      "comm_pattern": "all-reduce (tam mesh)",
+      "peers_per_rank": 7,
+      "fwd_ms": 0.9459326043725014,
+      "comm_mb_fwd": 58.720256,
+      "comm_mb_fwd_bwd": 117.440512,
+      "proj_sec_1gbps": 0.939524096,
+      "proj_sec_10gbps": 0.0939524096,
+      "proj_sec_100gbps": 0.00939524096
+    },
+    {
+      "variant": "topo_ring",
+      "hidden": 32768,
+      "params_per_rank": 4194304,
+      "comm_pattern": "komsu P2P (halka)",
+      "peers_per_rank": 2,
+      "fwd_ms": 0.5228741094470024,
+      "comm_mb_fwd": 16.777216,
+      "comm_mb_fwd_bwd": 33.554432,
+      "proj_sec_1gbps": 0.26843545599999996,
+      "proj_sec_10gbps": 0.026843545599999998,
+      "proj_sec_100gbps": 0.0026843545599999994
+    },
+    {
+      "variant": "topo_block",
+      "hidden": 65536,
+      "params_per_rank": 4194304,
+      "comm_pattern": "iletisim yok",
+      "peers_per_rank": 0,
+      "fwd_ms": 0.25738514959812164,
+      "comm_mb_fwd": 0.0,
+      "comm_mb_fwd_bwd": 0.0,
+      "proj_sec_1gbps": 0.0,
+      "proj_sec_10gbps": 0.0,
+      "proj_sec_100gbps": 0.0
+    }
+  ]
+}

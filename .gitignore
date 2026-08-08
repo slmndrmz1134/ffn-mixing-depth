@@ -1,0 +1,51 @@
+# --- Python ---
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+*.egg-info/
+
+# --- Datasets (regenerate with prepare_text.py / prepare_enwik9.py) ---
+# text8/enwik9 are several hundred MB and are downloaded, not authored here.
+data/
+*.bin
+*.zip
+*.tar
+*.tar.gz
+
+# --- Training artifacts (checkpoints are large; results/*.json are kept) ---
+logs/
+checkpoints/
+*.pth
+*.pt
+
+# --- Superseded raster figures (PDF versions are the ones the paper uses) ---
+*.png
+
+# --- LaTeX build products ---
+*.aux
+*.bbl
+*.blg
+*.log
+*.out
+*.synctex.gz
+*.toc
+*.fls
+*.fdb_latexmk
+
+# --- Local working documents, not part of the artifact ---
+*.docx
+prism_gonderim/
+prism_gonderim*.zip
+notes/
+
+# --- Personal operational tooling (no scientific content) ---
+# File transfer to a specific cluster account, and SLURM job monitoring.
+# The .slurm scripts DO stay: they are the experimental record (grids,
+# hyperparameters, and the predictions registered before each run).
+gonder.sh
+izle.sh
+
+# --- OS ---
+.DS_Store
+Thumbs.db

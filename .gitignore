@@ -22,6 +22,11 @@ checkpoints/
 # --- Superseded raster figures (PDF versions are the ones the paper uses) ---
 *.png
 
+# --- Paper sources ---
+# The paper lives on arXiv/the journal, not here. This repo is the code and
+# data artifact; keeping a second copy of the manuscript only creates drift.
+*.tex
+
 # --- LaTeX build products ---
 *.aux
 *.bbl

@@ -54,3 +54,7 @@ izle.sh
 # --- OS ---
 .DS_Store
 Thumbs.db
+
+# arXiv submission package (rebuilt on demand)
+arxiv/
+arxiv_submission.zip

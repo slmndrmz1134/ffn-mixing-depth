@@ -22,10 +22,19 @@ checkpoints/
 # --- Superseded raster figures (PDF versions are the ones the paper uses) ---
 *.png
 
-# --- Paper sources ---
+# --- Paper sources and build chain ---
 # The paper lives on arXiv/the journal, not here. This repo is the code and
 # data artifact; keeping a second copy of the manuscript only creates drift.
+# The build chain goes with it: scripts that reference files absent from the
+# repo would only confuse a visitor, and the .sty/.bst files are third-party
+# (they belong to the TMLR style repository, not here).
 *.tex
+refs.bib
+tmlr.sty
+tmlr.bst
+fancyhdr.sty
+make_tmlr.py
+paketle.py
 
 # --- LaTeX build products ---
 *.aux
@@ -42,7 +51,11 @@ checkpoints/
 *.docx
 prism_gonderim/
 prism_gonderim*.zip
-notes/
+# Turkish working notes and a personal TODO list: superseded by the paper,
+# not part of the artifact. The one exception is the experiment inventory,
+# which documents what every record in results/ is and why.
+notes/*
+!notes/DENEYLER.md
 
 # --- Personal operational tooling (no scientific content) ---
 # File transfer to a specific cluster account, and SLURM job monitoring.
@@ -58,3 +71,10 @@ Thumbs.db
 # arXiv submission package (rebuilt on demand)
 arxiv/
 arxiv_submission.zip
+tmlr_paket/
+tmlr_overleaf.zip
+tr_paket/
+makale_TR_overleaf.zip
+
+# Gonderim paketleri (paketle.py ile uretilir)
+GONDERIM/

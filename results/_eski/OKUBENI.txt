@@ -1,0 +1,5 @@
+# ESKI/KOPYA KOSULAR - ANALIZE DAHIL ETME
+
+1431389: train_topology.py eski surumuyle kosuldu, sonuclar 46x sapiyor.
+1431474: 1431458 ile BIREBIR ayni (kopya gonderim).
+Args bunlari ayirt etmiyor; bu yuzden ayri klasore alindilar.

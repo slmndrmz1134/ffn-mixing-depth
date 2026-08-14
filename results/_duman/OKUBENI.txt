@@ -1,0 +1,5 @@
+# DUMAN TESTLERI - DENEY DEGIL
+
+ddpduman_*: DDP boru hatti dogrulamasi (d=256).
+deneme.json: tek seferlik deneme kosusu.
+Gercek deneylerle ayni JSON semasini paylastiklari icin ayrildilar.

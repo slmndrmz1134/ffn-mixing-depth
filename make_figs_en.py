@@ -106,36 +106,64 @@ fig.savefig("fig_depth.pdf", bbox_inches="tight", dpi=300)
 plt.close(fig)
 print("fig_depth.pdf written")
 
-# ---------- FIG 4 (NEW): tau explains what coverage cannot ----------
-fig, axes = plt.subplots(1, 2, figsize=(7.0, 2.7))
+# ---------- FIG 4: tau explains what coverage cannot ----------
+fig, axes = plt.subplots(1, 2, figsize=(7.2, 3.1))
 col = {1: "#2a7f4f", 3: "#7048c0", 4: "#7048c0", 5: "#c06048", 99: "#b03030"}
 
 for ax, M in zip(axes, [16, 64]):
-    for f, (name, mk) in PAT.items():
+    pts = []
+    for f, (nm, mk) in PAT.items():
         st = bpc(f, M)
         if not st or st[2] < 2:
             continue
         t, C, _ = A.tau_hesapla(f, M, 8)
-        tt = t if t else 99
-        ax.errorbar([C], [st[0]], yerr=[st[1] / np.sqrt(st[2])], marker=mk, ms=7,
-                    capsize=2, color=col.get(tt, "0.4"), lw=0)
-        ax.annotate(f"{name}\n" + r"$\tau=$" + (str(t) if t else r"$>L$"),
-                    (C, st[0]), textcoords="offset points", xytext=(6, -3),
-                    fontsize=6.2, color=col.get(tt, "0.4"))
+        pts.append((C, st[0], st[1] / np.sqrt(st[2]), nm, t, mk))
+
+    ys = [p[1] for p in pts]
+    span = max(ys) - min(ys)
+    ax.set_ylim(min(ys) - 0.18 * span, max(ys) + 0.18 * span)
+    lo, hi = ax.get_ylim()
+
+    # Etiketler TEK satir; carpismayi onlemek icin y'ye gore siralayip
+    # etiket yuksekligi kadar (yaklasik %9) minimum aralik zorluyoruz.
+    order = sorted(range(len(pts)), key=lambda i: pts[i][1])
+    bosluk = (hi - lo) * 0.105
+    lab_y, prev = {}, -1e9
+    for i in order:
+        yy = max(pts[i][1], prev + bosluk)
+        lab_y[i] = yy
+        prev = yy
+
+    for i, (C, y, err, nm, t, mk) in enumerate(pts):
+        c = col.get(t if t else 99, "0.4")
+        ax.errorbar([C], [y], yerr=[err], marker=mk, ms=7, capsize=2, color=c,
+                    lw=0, zorder=3)
+        ly = lab_y[i]
+        if abs(ly - y) > (hi - lo) * 0.015:
+            ax.plot([C + 0.04, C + 0.11], [y, ly], lw=0.5, color=c, alpha=0.55,
+                    zorder=2)
+        # the whole tau expression must be inside math mode, otherwise the
+        # {>} braces are typeset literally.
+        tau_str = rf"$\tau{{=}}{t}$" if t else r"$\tau{>}L$"
+        ax.annotate(f"{nm} ({tau_str})",
+                    (C + 0.13, ly), fontsize=6.4, color=c,
+                    va="center", ha="left", zorder=4)
+
     ax.set_xlabel(r"Per-layer coverage $\mathcal{C}$")
     ax.set_title(f"$M={M}$ (density {4/M:.3f})".replace("0.062", "1/16"), fontsize=8)
     ax.grid(True, lw=0.3, alpha=0.5)
-    ax.set_xlim(-0.06, 1.15)
+    ax.set_xlim(-0.10, 1.95)
 axes[0].set_ylabel("val bpc (lower = better)")
-fig.text(0.5, -0.06,
-         "Same coverage with different quality, different coverage with the same quality: "
-         r"the discriminating quantity is $\tau$, not $\mathcal{C}$." "\n"
-         r"At $M=64$ butterfly leads despite HALF the coverage of ring --- it is the only "
-         r"pattern that completes its mixing.",
+fig.text(0.5, -0.05,
+         "Same coverage with different quality, different coverage with the same "
+         r"quality: the discriminating quantity is $\tau$, not $\mathcal{C}$." "\n"
+         r"At $M{=}64$ butterfly leads despite HALF the coverage of ring --- it is "
+         r"the only pattern that completes its mixing.",
          ha="center", fontsize=7)
 fig.tight_layout()
 fig.savefig("fig_tau_en.pdf", bbox_inches="tight", dpi=300)
+fig.savefig("fig_tau_en_onizleme.png", bbox_inches="tight", dpi=160)
 plt.close(fig)
-print("fig_tau_en.pdf written")
+print("fig_tau_en.pdf + onizleme yazildi")
 
 print("\nFOUR FIGURES READY (all generated from results/*.json).")

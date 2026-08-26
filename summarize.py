@@ -40,6 +40,11 @@ def main():
         # gruba koyarsak tok/s ortalamasi anlamsizlasir. Ayri tutuluyor.
         if a.get("fast"):
             kl = (kl + "+bmm") if kl != "-" else "bmm"
+        # sabit-maske kontrolu AYRI bir deney kolu: topoloji tum katmanlarda
+        # ayni tutulur. Ayni gruba koyarsak iki kolu karistirip her iki
+        # ortalamayi da bozariz (analiz_tau.py bunlari zaten ayri tutuyor).
+        if a.get("fixed_mask"):
+            kl = (kl + "+sabit") if kl != "-" else "sabit"
         groups[(a["ffn"], a["ffn_mult"], a.get("init", "mixed"), a["n_layer"], kl)].append({
             "bpc": r["final_val_bpc"],
             "toks": r["tokens_per_sec"],

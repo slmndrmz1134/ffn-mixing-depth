@@ -1,7 +1,7 @@
 # Mixing Depth in Sparse Transformer FFN Layers
 
 Code and raw results for **"Structured Sparsity in Transformer Feed-Forward Layers:
-A Controlled Study of the Coverage–Depth–Communication Trade-off."**
+Mixing Depth, and the Limits of Communication Reduction."**
 
 📄 **Paper:** arXiv link to be added once the preprint is posted.
 
@@ -11,8 +11,8 @@ We replace the two dense matrices of a Transformer FFN with seven connectivity p
 so every variant has the same parameter count and the same number of multiply-accumulates.
 The only thing that varies is the *shape* of the weight matrix.
 
-All 326 training runs were performed on NVIDIA H200 GPUs at
-[TÜBİTAK ULAKBİM TRUBA](https://truba.gov.tr/).
+All 324 training runs were performed at [TÜBİTAK ULAKBİM TRUBA](https://truba.gov.tr/) — the
+layer-scale study on an A100, everything else on H200s.
 
 ## Main result
 
@@ -61,11 +61,13 @@ bench_distributed.py multi-GPU communication benchmark
 prepare_text.py      builds text8 into data/
 prepare_enwik9.py    builds enwik9 into data/
 
-analiz_tau.py        THE analysis entry point: τ tables, depth regimes, control verdict
+analiz_tau.py        THE analysis entry point and single source of truth for every
+                     number in the paper: τ tables, depth regimes, control verdict
 make_figs.py         figures, Turkish labels    (reads results/, nothing hardcoded)
 make_figs_en.py      figures, English labels
 make_tables.py       regenerates TABLOLAR.md from results/
-summarize.py         flattens results/*.json into ozet.csv
+summarize.py         quick browsing aid; groups per-init and is NOT the source of
+                     the paper's numbers — use analiz_tau.py for those
 karar.py             bandwidth decision model
 gecikme.py           latency floor: the alpha-beta wall sparsification cannot cross
 
@@ -150,7 +152,7 @@ Significance throughout is `σ = |Δ| / sqrt(SE₁² + SE₂²)`, and `σ < 2` i
 ```bibtex
 @article{durmaz2026mixingdepth,
   title  = {Structured Sparsity in Transformer Feed-Forward Layers:
-            A Controlled Study of the Coverage--Depth--Communication Trade-off},
+            Mixing Depth, and the Limits of Communication Reduction},
   author = {Durmaz, Mustafa Selman},
   year   = {2026}
 }

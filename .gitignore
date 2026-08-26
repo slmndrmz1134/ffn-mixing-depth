@@ -78,3 +78,8 @@ makale_TR_overleaf.zip
 
 # Gonderim paketleri (paketle.py ile uretilir)
 GONDERIM/
+
+# Legacy convenience summary. analiz_tau.py is the single source of truth for
+# every number in the paper; summarize.py groups runs differently (per-init)
+# and is kept only as a quick browsing aid, so its CSV is not published.
+ozet.csv

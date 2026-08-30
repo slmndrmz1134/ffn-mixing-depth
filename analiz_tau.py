@@ -259,7 +259,7 @@ def kontrol_hukmu(grid):
     print("=" * 86)
     sabitler = [r for r in grid if r["sabit"]]
     if not sabitler:
-        print("  Kontrol kosulari henuz yok. TRUBA'da calistir:")
+        print("  Kontrol kosulari henuz yok. Kumede calistir:")
         print("      sbatch slurm/gpt_sabit_maske.slurm")
         print("  Bittiginde bu betigi tekrar calistir; hukum buraya basilir.")
         return

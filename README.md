@@ -4,6 +4,9 @@ Code and raw results for **"Structured Sparsity in Transformer Feed-Forward Laye
 Mixing Depth, and the Limits of Communication Reduction."**
 
 📄 **Paper:** arXiv link to be added once the preprint is posted.
+📦 **Archived:** [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.22182108.svg)](https://doi.org/10.5281/zenodo.22182108)
+— `v1.1.0` is the snapshot the paper's numbers were computed from; the
+[concept DOI](https://doi.org/10.5281/zenodo.21851438) always resolves to the latest version.
 
 We replace the two dense matrices of a Transformer FFN with seven connectivity patterns
 (dense, ring, small-world, random, block-diagonal, mosaic, butterfly) under an
@@ -155,6 +158,16 @@ Significance throughout is `σ = |Δ| / sqrt(SE₁² + SE₂²)`, and `σ < 2` i
             Mixing Depth, and the Limits of Communication Reduction},
   author = {Durmaz, Mustafa Selman},
   year   = {2026}
+}
+
+@software{durmaz2026code,
+  title     = {Mixing Depth in Sparse Transformer FFN Layers: code and 324 training runs},
+  author    = {Durmaz, Mustafa Selman},
+  year      = {2026},
+  publisher = {Zenodo},
+  version   = {v1.1.0},
+  doi       = {10.5281/zenodo.22182108},
+  url       = {https://doi.org/10.5281/zenodo.22182108}
 }
 ```
 

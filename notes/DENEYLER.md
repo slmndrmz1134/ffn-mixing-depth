@@ -1,6 +1,6 @@
 # Deney Envanteri
 
-`results/` altındaki **326 kaydın tamamı**, aile aile: ne ölçüldü, neden, ne çıktı,
+`results/` altındaki **310 kaydın tamamı** (324 eğitim + 10 iletişim/gecikme ölçümü; katman ölçeğindeki her kayıt 5 eğitim içerir), aile aile: ne ölçüldü, neden, ne çıktı,
 makalenin neresinde. Makalede karşılığı olmayanlar **⚠ MAKALEDE YOK** ile işaretli.
 
 Üretim: `python analiz_tau.py` (kalite), `python gecikme.py` (gecikme tabanı),
@@ -8,7 +8,7 @@ makalenin neresinde. Makalede karşılığı olmayanlar **⚠ MAKALEDE YOK** ile
 
 ---
 
-## Deney 1 — Sentetik katman görevleri (18 koşu, A100)
+## Deney 1 — Sentetik katman görevleri (30 eğitim = 6 geçerli kayıt × 5 topoloji, A100)
 
 **Betik:** `train_topology.py` · **Dosyalar:** `train_mixing_*.json`, `train_teacher_*.json`
 **Kurulum:** genişlik 1024, derinlik 4, derece 16, 3 tohum × 3 iş

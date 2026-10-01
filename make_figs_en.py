@@ -31,10 +31,14 @@ def bpc(ffn, M, L=8, sabit=False):
 
 # ---------- FIG 1: the coverage concept ----------
 n, k = 16, 4
-patterns = [("Dense\n(coverage 1.00)", T.build_rect("ring", n, n, n)),
-            ("Block\n(coverage 0.25)", T.build_rect("block", n, n, k)),
-            ("Ring\n(coverage 0.44)", T.build_rect("ring", n, n, k)),
-            ("Small-world\n(coverage 0.61)", T.build_rect("watts_strogatz", n, n, k, p=0.25, seed=3))]
+patterns = [("Dense", T.build_rect("ring", n, n, n)),
+            ("Block", T.build_rect("block", n, n, k)),
+            ("Ring", T.build_rect("ring", n, n, k)),
+            ("Small-world", T.build_rect("watts_strogatz", n, n, k, p=0.25, seed=3))]
+# coverage of this toy FFN (the same mask as up and down projection), computed
+# from the mask; it is NOT the d=512 value reported in Table 1
+patterns = [(f"{a}\n(coverage {(np.asarray(m) @ np.asarray(m) > 0).mean():.2f})", m)
+            for a, m in patterns]
 fig, axes = plt.subplots(1, 4, figsize=(7.0, 2.0))
 for ax, (name, m) in zip(axes, patterns):
     ax.imshow(m, cmap="Purples", vmin=0, vmax=1, interpolation="nearest")
@@ -42,9 +46,6 @@ for ax, (name, m) in zip(axes, patterns):
     ax.set_xticks([]); ax.set_yticks([])
     for s in ax.spines.values():
         s.set_visible(True); s.set_linewidth(0.5)
-fig.text(0.5, -0.02, "Purple = nonzero weight. All four patterns have the same number of "
-         "connections per row (equal parameters); only the distribution differs.",
-         ha="center", fontsize=7)
 fig.tight_layout()
 fig.savefig("fig_coverage.pdf", bbox_inches="tight", dpi=300)
 plt.close(fig)

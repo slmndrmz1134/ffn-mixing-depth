@@ -34,10 +34,14 @@ def bpc(ffn, M, L=8, sabit=False):
 
 # ---------- FIG 1: kapsama kavrami (maske desenleri) ----------
 n, k = 16, 4
-desenler = [("Yogun\n(kapsama 1.00)", T.build_rect("ring", n, n, n)),
-            ("Blok\n(kapsama 0.25)", T.build_rect("block", n, n, k)),
-            ("Halka\n(kapsama 0.44)", T.build_rect("ring", n, n, k)),
-            ("Kucuk-dunya\n(kapsama 0.61)", T.build_rect("watts_strogatz", n, n, k, p=0.25, seed=3))]
+desenler = [("Yogun", T.build_rect("ring", n, n, n)),
+            ("Blok", T.build_rect("block", n, n, k)),
+            ("Halka", T.build_rect("ring", n, n, k)),
+            ("Kucuk-dunya", T.build_rect("watts_strogatz", n, n, k, p=0.25, seed=3))]
+# bu oyuncak FFN'in kapsamasi (ayni maske hem yukari hem asagi izdusum),
+# maskeden hesaplanir; Tablo 1'deki d=512 degeri DEGILDIR
+desenler = [(f"{a}\n(kapsama {(np.asarray(m) @ np.asarray(m) > 0).mean():.2f})", m)
+            for a, m in desenler]
 fig, axes = plt.subplots(1, 4, figsize=(7.0, 2.0))
 for ax, (ad, m) in zip(axes, desenler):
     ax.imshow(m, cmap="Purples", vmin=0, vmax=1, interpolation="nearest")
@@ -45,9 +49,6 @@ for ax, (ad, m) in zip(axes, desenler):
     ax.set_xticks([]); ax.set_yticks([])
     for s in ax.spines.values():
         s.set_visible(True); s.set_linewidth(0.5)
-fig.text(0.5, -0.02, "Mor = sifir olmayan agirlik. Dort desende de satir basina ayni "
-         "baglanti sayisi (esit parametre); degisen tek sey dagilim.",
-         ha="center", fontsize=7)
 fig.tight_layout()
 fig.savefig("fig_kapsama.pdf", bbox_inches="tight", dpi=300)
 plt.close(fig)
